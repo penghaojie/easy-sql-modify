@@ -1,7 +1,6 @@
 package io.github.penghaojie.esm;
 
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
@@ -115,18 +114,20 @@ public class SelectStatementProcessor implements StatementProcessor {
     private Expression buildEqualExpression(Expression left) {
         EqualsTo equalsTo = new EqualsTo();
         equalsTo.setLeftExpression(left);
-        equalsTo.setRightExpression(new StringValue(sqlCondition.getColumnValue()));
+        Object columnValue = sqlCondition.getColumnValue();
+        Expression rightExp = ValueWrapper.wrap(columnValue);
+        equalsTo.setRightExpression(rightExp);
         return equalsTo;
     }
 
     private Expression buildInExpression(Expression left) {
         InExpression inExpression = new InExpression();
         inExpression.setLeftExpression(left);
-        List<String> columnValues = sqlCondition.getColumnValues();
+        List<Object> columnValues = sqlCondition.getColumnValues();
         ExpressionList expressionList = new ExpressionList();
         ArrayList<Expression> list = new ArrayList<>();
-        for (String value : columnValues) {
-            list.add(new StringValue(value));
+        for (Object value : columnValues) {
+            list.add(ValueWrapper.wrap(value));
         }
         expressionList.setExpressions(list);
         inExpression.setRightItemsList(expressionList);

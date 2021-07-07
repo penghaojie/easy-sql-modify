@@ -27,10 +27,10 @@ public interface SqlCondition {
     /**
      * @return sql字段值
      */
-    String getColumnValue();
+    Object getColumnValue();
 
     /**
      * @return sql字段值范围
      */
-    List<String> getColumnValues();
+    List<Object> getColumnValues();
 }
